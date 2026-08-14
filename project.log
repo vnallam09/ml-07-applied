@@ -805,3 +805,465 @@ dtype: int64
 2026-08-13 23:26:45 | INFO | M07 | ========================
 2026-08-13 23:26:45 | INFO | M07 | API endpoint: https://ml-penguin-predictor.onrender.com/predict
 2026-08-13 23:26:45 | INFO | M07 | ========================
+2026-08-14 00:08:34 | INFO | M07_TEJA | === RUN START ===
+2026-08-14 00:08:34 | INFO | M07_TEJA | project=M07_TEJA
+2026-08-14 00:08:34 | INFO | M07_TEJA | repo_dir=ml-07-applied
+2026-08-14 00:08:34 | INFO | M07_TEJA | python=3.14.0
+2026-08-14 00:08:34 | INFO | M07_TEJA | os=Windows 11
+2026-08-14 00:08:34 | INFO | M07_TEJA | shell=powershell
+2026-08-14 00:08:34 | INFO | M07_TEJA | cwd=notebooks
+2026-08-14 00:08:34 | INFO | M07_TEJA | github_actions=False
+2026-08-14 00:08:34 | INFO | M07_TEJA | Confirming installation:
+2026-08-14 00:08:34 | INFO | M07_TEJA |   python:       3.14.0
+2026-08-14 00:08:34 | INFO | M07_TEJA |   pandas:       3.0.5
+2026-08-14 00:08:34 | INFO | M07_TEJA |   numpy:        2.5.2
+2026-08-14 00:08:34 | INFO | M07_TEJA |   matplotlib:   3.11.1
+2026-08-14 00:08:34 | INFO | M07_TEJA |   seaborn:      0.13.2
+2026-08-14 00:08:34 | INFO | M07_TEJA |   requests:     2.34.2
+2026-08-14 00:08:34 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:08:34 | INFO | M07_TEJA | Request timeout: 90s
+2026-08-14 00:08:34 | INFO | M07_TEJA | Images directory: C:\GitHub_Repo\ml-07-applied\docs\images
+2026-08-14 00:08:34 | INFO | M07_TEJA | Warming up the API (a sleeping free-tier server can take ~50s)...
+2026-08-14 00:08:37 | INFO | M07_TEJA | Warm-up response: Adelie
+2026-08-14 00:08:37 | INFO | M07_TEJA | Baseline predictions:
+2026-08-14 00:08:38 | INFO | M07_TEJA |   expected=Adelie     got=Adelie     [OK]
+2026-08-14 00:08:38 | INFO | M07_TEJA |   expected=Chinstrap  got=Chinstrap  [OK]
+2026-08-14 00:08:39 | INFO | M07_TEJA |   expected=Gentoo     got=Gentoo     [OK]
+2026-08-14 00:09:01 | INFO | M07_TEJA | bill_length_mm sweep:
+2026-08-14 00:09:01 | INFO | M07_TEJA |  bill_length_mm prediction
+      30.000000     Adelie
+      31.578947     Adelie
+      33.157895     Adelie
+      34.736842     Adelie
+      36.315789     Adelie
+      37.894737     Adelie
+      39.473684     Adelie
+      41.052632     Adelie
+      42.631579  Chinstrap
+      44.210526  Chinstrap
+      45.789474  Chinstrap
+      47.368421  Chinstrap
+      48.947368  Chinstrap
+      50.526316  Chinstrap
+      52.105263  Chinstrap
+      53.684211  Chinstrap
+      55.263158  Chinstrap
+      56.842105  Chinstrap
+      58.421053  Chinstrap
+      60.000000  Chinstrap
+2026-08-14 00:09:01 | INFO | M07_TEJA | ANALYST CHOICE: Where does the prediction shift and does that match your expectation?
+2026-08-14 00:09:02 | INFO | M07_TEJA | Baseline prediction for the unmodified payload: Adelie
+2026-08-14 00:09:20 | INFO | M07_TEJA |   swept bill_length_mm       30 to 60 (20 values)
+2026-08-14 00:09:42 | INFO | M07_TEJA |   swept bill_depth_mm        12 to 22 (20 values)
+2026-08-14 00:10:03 | INFO | M07_TEJA |   swept flipper_length_mm    170 to 235 (20 values)
+2026-08-14 00:10:24 | INFO | M07_TEJA |   swept body_mass_g          2500 to 6500 (20 values)
+2026-08-14 00:10:24 | INFO | M07_TEJA | Feature sensitivity ranking:
+2026-08-14 00:10:24 | INFO | M07_TEJA |           feature  changed_%  crossings  species_seen                                                                                                                                                                                                                                                                                                                             boundaries
+   bill_length_mm       60.0          1             2                                                                                                                                                                                                                                                                                                            Adelie->Chinstrap near 41.8
+flipper_length_mm        5.0          2             2 Adelie->ERROR: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)) near 192.2; ERROR: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))->Adelie near 195.7
+    bill_depth_mm        0.0          0             1                                                                                                                                                                                                                                                                                                                                   none
+      body_mass_g        0.0          0             1                                                                                                                                                                                                                                                                                                                                   none
+2026-08-14 00:10:24 | INFO | M07_TEJA | Saved chart: C:\GitHub_Repo\ml-07-applied\docs\images\feature_sensitivity_teja_p4.png
+2026-08-14 00:12:06 | INFO | M07_TEJA | ANALYST CHOICE: What does the boundary shape tell you about the model?
+2026-08-14 00:12:06 | INFO | M07_TEJA | Edge case results:
+2026-08-14 00:12:10 | INFO | M07_TEJA |   missing feature        -> ERROR: 400 Client Error: Bad Request for url: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:12:10 | INFO | M07_TEJA |   extreme bill length    -> Adelie
+2026-08-14 00:12:11 | INFO | M07_TEJA |   very large bill        -> Chinstrap
+2026-08-14 00:12:11 | INFO | M07_TEJA |   negative value         -> Adelie
+2026-08-14 00:12:12 | INFO | M07_TEJA |   zero body mass         -> Adelie
+2026-08-14 00:12:12 | INFO | M07_TEJA | ANALYST CHOICE: Which edge cases were handled cleanly and which were not?
+2026-08-14 00:12:12 | INFO | M07_TEJA | ========================
+2026-08-14 00:12:12 | INFO | M07_TEJA | SUMMARY
+2026-08-14 00:12:12 | INFO | M07_TEJA | ========================
+2026-08-14 00:12:12 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:12:12 | INFO | M07_TEJA | Baseline prediction: Adelie
+2026-08-14 00:12:12 | INFO | M07_TEJA | Features swept: 4 x 20 values
+2026-08-14 00:12:12 | INFO | M07_TEJA | Feature sensitivity ranking (most influential first):
+2026-08-14 00:12:12 | INFO | M07_TEJA |   bill_length_mm       changed= 60.0%  crossings=1  boundaries: Adelie->Chinstrap near 41.8
+2026-08-14 00:12:12 | INFO | M07_TEJA |   flipper_length_mm    changed=  5.0%  crossings=2  boundaries: Adelie->ERROR: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None)) near 192.2; ERROR: ('Connection aborted.', ConnectionResetError(10054, 'An existing connection was forcibly closed by the remote host', None, 10054, None))->Adelie near 195.7
+2026-08-14 00:12:12 | INFO | M07_TEJA |   bill_depth_mm        changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:12:12 | INFO | M07_TEJA |   body_mass_g          changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:12:12 | INFO | M07_TEJA | Most influential feature: bill_length_mm
+2026-08-14 00:12:12 | INFO | M07_TEJA | ========================
+2026-08-14 00:12:12 | INFO | M07_TEJA | Executed successfully!
+2026-08-14 00:12:12 | INFO | M07_TEJA | ========================
+2026-08-14 00:13:42 | INFO | M07_TEJA | === RUN START ===
+2026-08-14 00:13:42 | INFO | M07_TEJA | project=M07_TEJA
+2026-08-14 00:13:42 | INFO | M07_TEJA | repo_dir=ml-07-applied
+2026-08-14 00:13:42 | INFO | M07_TEJA | python=3.14.0
+2026-08-14 00:13:42 | INFO | M07_TEJA | os=Windows 11
+2026-08-14 00:13:42 | INFO | M07_TEJA | shell=powershell
+2026-08-14 00:13:42 | INFO | M07_TEJA | cwd=notebooks
+2026-08-14 00:13:42 | INFO | M07_TEJA | github_actions=False
+2026-08-14 00:13:42 | INFO | M07_TEJA | Confirming installation:
+2026-08-14 00:13:42 | INFO | M07_TEJA |   python:       3.14.0
+2026-08-14 00:13:42 | INFO | M07_TEJA |   pandas:       3.0.5
+2026-08-14 00:13:42 | INFO | M07_TEJA |   numpy:        2.5.2
+2026-08-14 00:13:42 | INFO | M07_TEJA |   matplotlib:   3.11.1
+2026-08-14 00:13:42 | INFO | M07_TEJA |   seaborn:      0.13.2
+2026-08-14 00:13:42 | INFO | M07_TEJA |   requests:     2.34.2
+2026-08-14 00:13:42 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:13:42 | INFO | M07_TEJA | Request timeout: 90s
+2026-08-14 00:13:42 | INFO | M07_TEJA | Images directory: C:\GitHub_Repo\ml-07-applied\docs\images
+2026-08-14 00:13:42 | INFO | M07_TEJA | Warming up the API (a sleeping free-tier server can take ~50s)...
+2026-08-14 00:13:45 | INFO | M07_TEJA | Warm-up response: Adelie
+2026-08-14 00:13:45 | INFO | M07_TEJA | Baseline predictions:
+2026-08-14 00:13:46 | INFO | M07_TEJA |   expected=Adelie     got=Adelie     [OK]
+2026-08-14 00:13:47 | INFO | M07_TEJA |   expected=Chinstrap  got=Chinstrap  [OK]
+2026-08-14 00:13:47 | INFO | M07_TEJA |   expected=Gentoo     got=Gentoo     [OK]
+2026-08-14 00:14:08 | INFO | M07_TEJA | bill_length_mm sweep:
+2026-08-14 00:14:08 | INFO | M07_TEJA |  bill_length_mm prediction
+      30.000000     Adelie
+      31.578947     Adelie
+      33.157895     Adelie
+      34.736842     Adelie
+      36.315789     Adelie
+      37.894737     Adelie
+      39.473684     Adelie
+      41.052632     Adelie
+      42.631579  Chinstrap
+      44.210526  Chinstrap
+      45.789474  Chinstrap
+      47.368421  Chinstrap
+      48.947368  Chinstrap
+      50.526316  Chinstrap
+      52.105263  Chinstrap
+      53.684211  Chinstrap
+      55.263158  Chinstrap
+      56.842105  Chinstrap
+      58.421053  Chinstrap
+      60.000000  Chinstrap
+2026-08-14 00:14:08 | INFO | M07_TEJA | ANALYST CHOICE: Where does the prediction shift and does that match your expectation?
+2026-08-14 00:14:09 | INFO | M07_TEJA | Baseline prediction for the unmodified payload: Adelie
+2026-08-14 00:14:30 | INFO | M07_TEJA |   swept bill_length_mm       30 to 60 (20 values)
+2026-08-14 00:14:57 | INFO | M07_TEJA |   swept bill_depth_mm        12 to 22 (20 values)
+2026-08-14 00:15:24 | INFO | M07_TEJA |   swept flipper_length_mm    170 to 235 (20 values)
+2026-08-14 00:15:42 | INFO | M07_TEJA |   swept body_mass_g          2500 to 6500 (20 values)
+2026-08-14 00:15:42 | INFO | M07_TEJA | Feature sensitivity ranking:
+2026-08-14 00:15:42 | INFO | M07_TEJA |           feature  changed_%  crossings  species_seen                  boundaries
+   bill_length_mm       60.0          1             2 Adelie->Chinstrap near 41.8
+    bill_depth_mm        0.0          0             1                        none
+flipper_length_mm        0.0          0             1                        none
+      body_mass_g        0.0          0             1                        none
+2026-08-14 00:15:43 | INFO | M07_TEJA | Saved chart: C:\GitHub_Repo\ml-07-applied\docs\images\feature_sensitivity_teja_p4.png
+2026-08-14 00:17:27 | INFO | M07_TEJA | ANALYST CHOICE: What does the boundary shape tell you about the model?
+2026-08-14 00:17:27 | INFO | M07_TEJA | Edge case results:
+2026-08-14 00:17:28 | INFO | M07_TEJA |   missing feature        -> ERROR: 400 Client Error: Bad Request for url: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:17:28 | INFO | M07_TEJA |   extreme bill length    -> Adelie
+2026-08-14 00:17:29 | INFO | M07_TEJA |   very large bill        -> Chinstrap
+2026-08-14 00:17:30 | INFO | M07_TEJA |   negative value         -> Adelie
+2026-08-14 00:17:30 | INFO | M07_TEJA |   zero body mass         -> Adelie
+2026-08-14 00:17:30 | INFO | M07_TEJA | ANALYST CHOICE: Which edge cases were handled cleanly and which were not?
+2026-08-14 00:17:30 | INFO | M07_TEJA | ========================
+2026-08-14 00:17:30 | INFO | M07_TEJA | SUMMARY
+2026-08-14 00:17:30 | INFO | M07_TEJA | ========================
+2026-08-14 00:17:30 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:17:30 | INFO | M07_TEJA | Baseline prediction: Adelie
+2026-08-14 00:17:30 | INFO | M07_TEJA | Features swept: 4 x 20 values
+2026-08-14 00:17:30 | INFO | M07_TEJA | Feature sensitivity ranking (most influential first):
+2026-08-14 00:17:30 | INFO | M07_TEJA |   bill_length_mm       changed= 60.0%  crossings=1  boundaries: Adelie->Chinstrap near 41.8
+2026-08-14 00:17:30 | INFO | M07_TEJA |   bill_depth_mm        changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:17:30 | INFO | M07_TEJA |   flipper_length_mm    changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:17:30 | INFO | M07_TEJA |   body_mass_g          changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:17:30 | INFO | M07_TEJA | Most influential feature: bill_length_mm
+2026-08-14 00:17:30 | INFO | M07_TEJA | ========================
+2026-08-14 00:17:30 | INFO | M07_TEJA | Executed successfully!
+2026-08-14 00:17:30 | INFO | M07_TEJA | ========================
+2026-08-14 00:19:52 | INFO | M07_TEJA | === RUN START ===
+2026-08-14 00:19:52 | INFO | M07_TEJA | project=M07_TEJA
+2026-08-14 00:19:52 | INFO | M07_TEJA | repo_dir=ml-07-applied
+2026-08-14 00:19:52 | INFO | M07_TEJA | python=3.14.0
+2026-08-14 00:19:52 | INFO | M07_TEJA | os=Windows 11
+2026-08-14 00:19:52 | INFO | M07_TEJA | shell=powershell
+2026-08-14 00:19:52 | INFO | M07_TEJA | cwd=notebooks
+2026-08-14 00:19:52 | INFO | M07_TEJA | github_actions=False
+2026-08-14 00:19:52 | INFO | M07_TEJA | Confirming installation:
+2026-08-14 00:19:52 | INFO | M07_TEJA |   python:       3.14.0
+2026-08-14 00:19:52 | INFO | M07_TEJA |   pandas:       3.0.5
+2026-08-14 00:19:52 | INFO | M07_TEJA |   numpy:        2.5.2
+2026-08-14 00:19:52 | INFO | M07_TEJA |   matplotlib:   3.11.1
+2026-08-14 00:19:52 | INFO | M07_TEJA |   seaborn:      0.13.2
+2026-08-14 00:19:52 | INFO | M07_TEJA |   requests:     2.34.2
+2026-08-14 00:19:52 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:19:52 | INFO | M07_TEJA | Request timeout: 90s
+2026-08-14 00:19:52 | INFO | M07_TEJA | Images directory: C:\GitHub_Repo\ml-07-applied\docs\images
+2026-08-14 00:19:52 | INFO | M07_TEJA | Warming up the API (a sleeping free-tier server can take ~50s)...
+2026-08-14 00:19:53 | INFO | M07_TEJA | Warm-up response: Adelie
+2026-08-14 00:19:53 | INFO | M07_TEJA | Baseline predictions:
+2026-08-14 00:19:56 | INFO | M07_TEJA |   expected=Adelie     got=Adelie     [OK]
+2026-08-14 00:19:57 | INFO | M07_TEJA |   expected=Chinstrap  got=Chinstrap  [OK]
+2026-08-14 00:19:58 | INFO | M07_TEJA |   expected=Gentoo     got=Gentoo     [OK]
+2026-08-14 00:20:16 | INFO | M07_TEJA | bill_length_mm sweep:
+2026-08-14 00:20:16 | INFO | M07_TEJA |  bill_length_mm prediction
+      30.000000     Adelie
+      31.578947     Adelie
+      33.157895     Adelie
+      34.736842     Adelie
+      36.315789     Adelie
+      37.894737     Adelie
+      39.473684     Adelie
+      41.052632     Adelie
+      42.631579  Chinstrap
+      44.210526  Chinstrap
+      45.789474  Chinstrap
+      47.368421  Chinstrap
+      48.947368  Chinstrap
+      50.526316  Chinstrap
+      52.105263  Chinstrap
+      53.684211  Chinstrap
+      55.263158  Chinstrap
+      56.842105  Chinstrap
+      58.421053  Chinstrap
+      60.000000  Chinstrap
+2026-08-14 00:20:17 | INFO | M07_TEJA | ANALYST CHOICE: Where does the prediction shift and does that match your expectation?
+2026-08-14 00:20:17 | INFO | M07_TEJA | Baseline prediction for the unmodified payload: Adelie
+2026-08-14 00:20:44 | INFO | M07_TEJA |   swept bill_length_mm       30 to 60 (20 values)
+2026-08-14 00:21:05 | INFO | M07_TEJA |   swept bill_depth_mm        12 to 22 (20 values)
+2026-08-14 00:21:27 | INFO | M07_TEJA |   swept flipper_length_mm    170 to 235 (20 values)
+2026-08-14 00:21:48 | INFO | M07_TEJA |   swept body_mass_g          2500 to 6500 (20 values)
+2026-08-14 00:21:48 | INFO | M07_TEJA | Feature sensitivity ranking:
+2026-08-14 00:21:48 | INFO | M07_TEJA |           feature  changed_%  crossings  species_seen                  boundaries
+   bill_length_mm       60.0          1             2 Adelie->Chinstrap near 41.8
+    bill_depth_mm        0.0          0             1                        none
+flipper_length_mm        0.0          0             1                        none
+      body_mass_g        0.0          0             1                        none
+2026-08-14 00:21:49 | INFO | M07_TEJA | Saved chart: C:\GitHub_Repo\ml-07-applied\docs\images\feature_sensitivity_teja_p4.png
+2026-08-14 00:23:30 | INFO | M07_TEJA | Saved chart: C:\GitHub_Repo\ml-07-applied\docs\images\prediction_grid_teja_p4.png
+2026-08-14 00:23:30 | INFO | M07_TEJA | Species reached on the grid: Adelie, Chinstrap
+2026-08-14 00:23:30 | INFO | M07_TEJA | First bill_length_mm that is no longer Adelie, per flipper_length_mm:
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 170.0  boundary at bill_length=44.1
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 176.7  boundary at bill_length=44.1
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 183.3  boundary at bill_length=44.1
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 190.0  boundary at bill_length=44.1
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 196.7  boundary at bill_length=44.1
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 203.3  boundary at bill_length=44.1
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 210.0  boundary at bill_length=46.9
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 216.7  boundary at bill_length=46.9
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 223.3  boundary at bill_length=46.9
+2026-08-14 00:23:30 | INFO | M07_TEJA |   flipper= 230.0  boundary at bill_length=46.9
+2026-08-14 00:23:30 | INFO | M07_TEJA | Edge case results:
+2026-08-14 00:23:34 | INFO | M07_TEJA |   missing feature        -> ERROR: 400 Client Error: Bad Request for url: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:23:35 | INFO | M07_TEJA |   extreme bill length    -> Adelie
+2026-08-14 00:23:35 | INFO | M07_TEJA |   very large bill        -> Chinstrap
+2026-08-14 00:23:36 | INFO | M07_TEJA |   negative value         -> Adelie
+2026-08-14 00:23:36 | INFO | M07_TEJA |   zero body mass         -> Adelie
+2026-08-14 00:23:36 | INFO | M07_TEJA | ANALYST CHOICE: Which edge cases were handled cleanly and which were not?
+2026-08-14 00:23:36 | INFO | M07_TEJA | ========================
+2026-08-14 00:23:36 | INFO | M07_TEJA | SUMMARY
+2026-08-14 00:23:36 | INFO | M07_TEJA | ========================
+2026-08-14 00:23:36 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:23:36 | INFO | M07_TEJA | Baseline prediction: Adelie
+2026-08-14 00:23:36 | INFO | M07_TEJA | Features swept: 4 x 20 values
+2026-08-14 00:23:36 | INFO | M07_TEJA | Feature sensitivity ranking (most influential first):
+2026-08-14 00:23:36 | INFO | M07_TEJA |   bill_length_mm       changed= 60.0%  crossings=1  boundaries: Adelie->Chinstrap near 41.8
+2026-08-14 00:23:36 | INFO | M07_TEJA |   bill_depth_mm        changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:23:36 | INFO | M07_TEJA |   flipper_length_mm    changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:23:36 | INFO | M07_TEJA |   body_mass_g          changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:23:36 | INFO | M07_TEJA | Most influential feature: bill_length_mm
+2026-08-14 00:23:36 | INFO | M07_TEJA | ========================
+2026-08-14 00:23:36 | INFO | M07_TEJA | Executed successfully!
+2026-08-14 00:23:36 | INFO | M07_TEJA | ========================
+2026-08-14 00:30:42 | INFO | ML | === RUN START ===
+2026-08-14 00:30:42 | INFO | ML | project=ML
+2026-08-14 00:30:42 | INFO | ML | repo_dir=ml-07-applied
+2026-08-14 00:30:42 | INFO | ML | python=3.14.0
+2026-08-14 00:30:42 | INFO | ML | os=Windows 11
+2026-08-14 00:30:42 | INFO | ML | shell=powershell
+2026-08-14 00:30:42 | INFO | ML | cwd=.
+2026-08-14 00:30:42 | INFO | ML | github_actions=False
+2026-08-14 00:40:53 | INFO | M07_TEJA | === RUN START ===
+2026-08-14 00:40:53 | INFO | M07_TEJA | project=M07_TEJA
+2026-08-14 00:40:53 | INFO | M07_TEJA | repo_dir=ml-07-applied
+2026-08-14 00:40:53 | INFO | M07_TEJA | python=3.14.0
+2026-08-14 00:40:53 | INFO | M07_TEJA | os=Windows 11
+2026-08-14 00:40:53 | INFO | M07_TEJA | shell=powershell
+2026-08-14 00:40:53 | INFO | M07_TEJA | cwd=notebooks
+2026-08-14 00:40:53 | INFO | M07_TEJA | github_actions=False
+2026-08-14 00:40:53 | INFO | M07_TEJA | Confirming installation:
+2026-08-14 00:40:53 | INFO | M07_TEJA |   python:       3.14.0
+2026-08-14 00:40:53 | INFO | M07_TEJA |   pandas:       3.0.5
+2026-08-14 00:40:53 | INFO | M07_TEJA |   numpy:        2.5.2
+2026-08-14 00:40:53 | INFO | M07_TEJA |   matplotlib:   3.11.1
+2026-08-14 00:40:53 | INFO | M07_TEJA |   seaborn:      0.13.2
+2026-08-14 00:40:53 | INFO | M07_TEJA |   requests:     2.34.2
+2026-08-14 00:40:53 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:40:53 | INFO | M07_TEJA | Request timeout: 90s
+2026-08-14 00:40:53 | INFO | M07_TEJA | Images directory: C:\GitHub_Repo\ml-07-applied\docs\images
+2026-08-14 00:40:53 | INFO | M07_TEJA | Warming up the API (a sleeping free-tier server can take ~50s)...
+2026-08-14 00:40:56 | INFO | M07_TEJA | Warm-up response: Adelie
+2026-08-14 00:40:56 | INFO | M07_TEJA | Baseline predictions:
+2026-08-14 00:40:57 | INFO | M07_TEJA |   expected=Adelie     got=Adelie     [OK]
+2026-08-14 00:40:58 | INFO | M07_TEJA |   expected=Chinstrap  got=Chinstrap  [OK]
+2026-08-14 00:40:59 | INFO | M07_TEJA |   expected=Gentoo     got=Gentoo     [OK]
+2026-08-14 00:41:27 | INFO | M07_TEJA | bill_length_mm sweep:
+2026-08-14 00:41:27 | INFO | M07_TEJA |  bill_length_mm prediction
+      30.000000     Adelie
+      31.578947     Adelie
+      33.157895     Adelie
+      34.736842     Adelie
+      36.315789     Adelie
+      37.894737     Adelie
+      39.473684     Adelie
+      41.052632     Adelie
+      42.631579  Chinstrap
+      44.210526  Chinstrap
+      45.789474  Chinstrap
+      47.368421  Chinstrap
+      48.947368  Chinstrap
+      50.526316  Chinstrap
+      52.105263  Chinstrap
+      53.684211  Chinstrap
+      55.263158  Chinstrap
+      56.842105  Chinstrap
+      58.421053  Chinstrap
+      60.000000  Chinstrap
+2026-08-14 00:41:27 | INFO | M07_TEJA | ANALYST CHOICE: Where does the prediction shift and does that match your expectation?
+2026-08-14 00:41:28 | INFO | M07_TEJA | Baseline prediction for the unmodified payload: Adelie
+2026-08-14 00:41:56 | INFO | M07_TEJA |   swept bill_length_mm       30 to 60 (20 values)
+2026-08-14 00:42:23 | INFO | M07_TEJA |   swept bill_depth_mm        12 to 22 (20 values)
+2026-08-14 00:42:48 | INFO | M07_TEJA |   swept flipper_length_mm    170 to 235 (20 values)
+2026-08-14 00:43:21 | INFO | M07_TEJA |   swept body_mass_g          2500 to 6500 (20 values)
+2026-08-14 00:43:21 | INFO | M07_TEJA | Feature sensitivity ranking:
+2026-08-14 00:43:21 | INFO | M07_TEJA |           feature  changed_%  crossings  species_seen                  boundaries
+   bill_length_mm       60.0          1             2 Adelie->Chinstrap near 41.8
+    bill_depth_mm        0.0          0             1                        none
+flipper_length_mm        0.0          0             1                        none
+      body_mass_g        0.0          0             1                        none
+2026-08-14 00:43:21 | INFO | M07_TEJA | Saved chart: C:\GitHub_Repo\ml-07-applied\docs\images\feature_sensitivity_teja_p4.png
+2026-08-14 00:45:40 | INFO | M07_TEJA | Saved chart: C:\GitHub_Repo\ml-07-applied\docs\images\prediction_grid_teja_p4.png
+2026-08-14 00:45:40 | INFO | M07_TEJA | Species reached on the grid: Adelie, Chinstrap
+2026-08-14 00:45:40 | INFO | M07_TEJA | First bill_length_mm that is no longer Adelie, per flipper_length_mm:
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 170.0  boundary at bill_length=44.1
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 176.7  boundary at bill_length=44.1
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 183.3  boundary at bill_length=44.1
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 190.0  boundary at bill_length=44.1
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 196.7  boundary at bill_length=44.1
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 203.3  boundary at bill_length=44.1
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 210.0  boundary at bill_length=46.9
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 216.7  boundary at bill_length=46.9
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 223.3  boundary at bill_length=46.9
+2026-08-14 00:45:40 | INFO | M07_TEJA |   flipper= 230.0  boundary at bill_length=46.9
+2026-08-14 00:45:40 | INFO | M07_TEJA | Edge case results:
+2026-08-14 00:45:44 | INFO | M07_TEJA |   missing feature        -> ERROR: 400 Client Error: Bad Request for url: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:45:45 | INFO | M07_TEJA |   extreme bill length    -> Adelie
+2026-08-14 00:45:46 | INFO | M07_TEJA |   very large bill        -> Chinstrap
+2026-08-14 00:45:47 | INFO | M07_TEJA |   negative value         -> Adelie
+2026-08-14 00:45:47 | INFO | M07_TEJA |   zero body mass         -> Adelie
+2026-08-14 00:45:47 | INFO | M07_TEJA | ANALYST CHOICE: Which edge cases were handled cleanly and which were not?
+2026-08-14 00:45:47 | INFO | M07_TEJA | ========================
+2026-08-14 00:45:47 | INFO | M07_TEJA | SUMMARY
+2026-08-14 00:45:47 | INFO | M07_TEJA | ========================
+2026-08-14 00:45:47 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:45:47 | INFO | M07_TEJA | Baseline prediction: Adelie
+2026-08-14 00:45:47 | INFO | M07_TEJA | Features swept: 4 x 20 values
+2026-08-14 00:45:47 | INFO | M07_TEJA | Feature sensitivity ranking (most influential first):
+2026-08-14 00:45:47 | INFO | M07_TEJA |   bill_length_mm       changed= 60.0%  crossings=1  boundaries: Adelie->Chinstrap near 41.8
+2026-08-14 00:45:47 | INFO | M07_TEJA |   bill_depth_mm        changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:45:47 | INFO | M07_TEJA |   flipper_length_mm    changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:45:47 | INFO | M07_TEJA |   body_mass_g          changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:45:47 | INFO | M07_TEJA | Most influential feature: bill_length_mm
+2026-08-14 00:45:47 | INFO | M07_TEJA | ========================
+2026-08-14 00:45:47 | INFO | M07_TEJA | Executed successfully!
+2026-08-14 00:45:47 | INFO | M07_TEJA | ========================
+2026-08-14 00:47:41 | INFO | M07_TEJA | === RUN START ===
+2026-08-14 00:47:41 | INFO | M07_TEJA | project=M07_TEJA
+2026-08-14 00:47:41 | INFO | M07_TEJA | repo_dir=ml-07-applied
+2026-08-14 00:47:41 | INFO | M07_TEJA | python=3.14.0
+2026-08-14 00:47:41 | INFO | M07_TEJA | os=Windows 11
+2026-08-14 00:47:41 | INFO | M07_TEJA | shell=powershell
+2026-08-14 00:47:41 | INFO | M07_TEJA | cwd=notebooks
+2026-08-14 00:47:41 | INFO | M07_TEJA | github_actions=False
+2026-08-14 00:47:41 | INFO | M07_TEJA | Confirming installation:
+2026-08-14 00:47:41 | INFO | M07_TEJA |   python:       3.14.0
+2026-08-14 00:47:41 | INFO | M07_TEJA |   pandas:       3.0.5
+2026-08-14 00:47:41 | INFO | M07_TEJA |   numpy:        2.5.2
+2026-08-14 00:47:41 | INFO | M07_TEJA |   matplotlib:   3.11.1
+2026-08-14 00:47:41 | INFO | M07_TEJA |   seaborn:      0.13.2
+2026-08-14 00:47:41 | INFO | M07_TEJA |   requests:     2.34.2
+2026-08-14 00:47:41 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:47:41 | INFO | M07_TEJA | Request timeout: 90s
+2026-08-14 00:47:41 | INFO | M07_TEJA | Images directory: C:\GitHub_Repo\ml-07-applied\docs\images
+2026-08-14 00:47:41 | INFO | M07_TEJA | Warming up the API (a sleeping free-tier server can take ~50s)...
+2026-08-14 00:47:42 | INFO | M07_TEJA | Warm-up response: Adelie
+2026-08-14 00:47:42 | INFO | M07_TEJA | Baseline predictions:
+2026-08-14 00:47:43 | INFO | M07_TEJA |   expected=Adelie     got=Adelie     [OK]
+2026-08-14 00:47:44 | INFO | M07_TEJA |   expected=Chinstrap  got=Chinstrap  [OK]
+2026-08-14 00:47:44 | INFO | M07_TEJA |   expected=Gentoo     got=Gentoo     [OK]
+2026-08-14 00:48:09 | INFO | M07_TEJA | bill_length_mm sweep:
+2026-08-14 00:48:09 | INFO | M07_TEJA |  bill_length_mm prediction
+      30.000000     Adelie
+      31.578947     Adelie
+      33.157895     Adelie
+      34.736842     Adelie
+      36.315789     Adelie
+      37.894737     Adelie
+      39.473684     Adelie
+      41.052632     Adelie
+      42.631579  Chinstrap
+      44.210526  Chinstrap
+      45.789474  Chinstrap
+      47.368421  Chinstrap
+      48.947368  Chinstrap
+      50.526316  Chinstrap
+      52.105263  Chinstrap
+      53.684211  Chinstrap
+      55.263158  Chinstrap
+      56.842105  Chinstrap
+      58.421053  Chinstrap
+      60.000000  Chinstrap
+2026-08-14 00:48:09 | INFO | M07_TEJA | ANALYST CHOICE: Where does the prediction shift and does that match your expectation?
+2026-08-14 00:48:10 | INFO | M07_TEJA | Baseline prediction for the unmodified payload: Adelie
+2026-08-14 00:48:38 | INFO | M07_TEJA |   swept bill_length_mm       30 to 60 (20 values)
+2026-08-14 00:49:04 | INFO | M07_TEJA |   swept bill_depth_mm        12 to 22 (20 values)
+2026-08-14 00:49:27 | INFO | M07_TEJA |   swept flipper_length_mm    170 to 235 (20 values)
+2026-08-14 00:49:52 | INFO | M07_TEJA |   swept body_mass_g          2500 to 6500 (20 values)
+2026-08-14 00:49:52 | INFO | M07_TEJA | Feature sensitivity ranking:
+2026-08-14 00:49:52 | INFO | M07_TEJA |           feature  changed_%  crossings  species_seen                  boundaries
+   bill_length_mm       60.0          1             2 Adelie->Chinstrap near 41.8
+    bill_depth_mm        0.0          0             1                        none
+flipper_length_mm        0.0          0             1                        none
+      body_mass_g        0.0          0             1                        none
+2026-08-14 00:49:52 | INFO | M07_TEJA | Saved chart: C:\GitHub_Repo\ml-07-applied\docs\images\feature_sensitivity_teja_p4.png
+2026-08-14 00:52:14 | INFO | M07_TEJA | Saved chart: C:\GitHub_Repo\ml-07-applied\docs\images\prediction_grid_teja_p4.png
+2026-08-14 00:52:15 | INFO | M07_TEJA | Species reached on the grid: Adelie, Chinstrap
+2026-08-14 00:52:15 | INFO | M07_TEJA | First bill_length_mm that is no longer Adelie, per flipper_length_mm:
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 170.0  boundary at bill_length=44.1
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 176.7  boundary at bill_length=44.1
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 183.3  boundary at bill_length=44.1
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 190.0  boundary at bill_length=44.1
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 196.7  boundary at bill_length=44.1
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 203.3  boundary at bill_length=44.1
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 210.0  boundary at bill_length=46.9
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 216.7  boundary at bill_length=46.9
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 223.3  boundary at bill_length=46.9
+2026-08-14 00:52:15 | INFO | M07_TEJA |   flipper= 230.0  boundary at bill_length=46.9
+2026-08-14 00:52:15 | INFO | M07_TEJA | Edge case results:
+2026-08-14 00:52:15 | INFO | M07_TEJA |   missing feature        -> ERROR: 400 Client Error: Bad Request for url: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:52:16 | INFO | M07_TEJA |   extreme bill length    -> Adelie
+2026-08-14 00:52:17 | INFO | M07_TEJA |   very large bill        -> Chinstrap
+2026-08-14 00:52:21 | INFO | M07_TEJA |   negative value         -> Adelie
+2026-08-14 00:52:22 | INFO | M07_TEJA |   zero body mass         -> Adelie
+2026-08-14 00:52:22 | INFO | M07_TEJA | ANALYST CHOICE: Which edge cases were handled cleanly and which were not?
+2026-08-14 00:52:22 | INFO | M07_TEJA | ========================
+2026-08-14 00:52:22 | INFO | M07_TEJA | SUMMARY
+2026-08-14 00:52:22 | INFO | M07_TEJA | ========================
+2026-08-14 00:52:22 | INFO | M07_TEJA | API endpoint: https://ml-penguin-predictor.onrender.com/predict
+2026-08-14 00:52:22 | INFO | M07_TEJA | Baseline prediction: Adelie
+2026-08-14 00:52:22 | INFO | M07_TEJA | Features swept: 4 x 20 values
+2026-08-14 00:52:22 | INFO | M07_TEJA | Feature sensitivity ranking (most influential first):
+2026-08-14 00:52:22 | INFO | M07_TEJA |   bill_length_mm       changed= 60.0%  crossings=1  boundaries: Adelie->Chinstrap near 41.8
+2026-08-14 00:52:22 | INFO | M07_TEJA |   bill_depth_mm        changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:52:22 | INFO | M07_TEJA |   flipper_length_mm    changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:52:22 | INFO | M07_TEJA |   body_mass_g          changed=  0.0%  crossings=0  boundaries: none
+2026-08-14 00:52:22 | INFO | M07_TEJA | Most influential feature: bill_length_mm
+2026-08-14 00:52:22 | INFO | M07_TEJA | ========================
+2026-08-14 00:52:22 | INFO | M07_TEJA | Executed successfully!
+2026-08-14 00:52:22 | INFO | M07_TEJA | ========================
+2026-08-14 00:53:43 | INFO | ML | === RUN START ===
+2026-08-14 00:53:43 | INFO | ML | project=ML
+2026-08-14 00:53:43 | INFO | ML | repo_dir=ml-07-applied
+2026-08-14 00:53:43 | INFO | ML | python=3.14.0
+2026-08-14 00:53:43 | INFO | ML | os=Windows 11
+2026-08-14 00:53:43 | INFO | ML | shell=powershell
+2026-08-14 00:53:43 | INFO | ML | cwd=.
+2026-08-14 00:53:43 | INFO | ML | github_actions=False

@@ -21,19 +21,132 @@ to get the example projects running on your machine.
 
 ## Phase 4. Technical Modification
 
-Describe your small technical modification to the example project.
+I copied `notebooks/ml_07_case.ipynb` to `notebooks/ml_07_teja_p4.ipynb` and
+left the original example untouched.
 
-Include:
+### What I changed
 
-- What you changed
-- Why you chose that change
-- How you verified that it worked
-- What result, output, chart, metric, or behavior confirmed the change
+The example sweeps one feature, `bill_length_mm`, and then asks the reader
+which feature produces the sharpest boundary - a question one sweep cannot
+answer. I added **Section 3b**, which reuses the example's own
+`sweep_feature()` function on all four features across their realistic ranges
+(4 x 20 = 80 calls) and ranks them by two measurements:
 
-Compared with the example project,
-explain what is different and why the change matters.
+- **changed %** - the share of swept values whose prediction differs from the
+  baseline, i.e. how much influence the feature has.
+- **crossings** - how many times the label flips. One crossing is a clean,
+  sharp boundary; several suggest the feature interacts with the others.
 
-Was it easy, or surprisingly challenging and why do you think so?
+### Why I chose that change
+
+It answers the notebook's own open question, and it costs almost nothing: one
+loop, one summary function, and one chart, all built on a function the example
+already provides. Nothing about the API call itself changes.
+
+### How I verified it worked
+
+I ran the notebook end to end headlessly:
+
+```shell
+uv run python -m nbconvert --to notebook --execute --inplace notebooks/ml_07_teja_p4.ipynb
+```
+
+It completes with `Executed successfully!` and produces three charts instead
+of two. The example notebook still runs unchanged alongside it.
+
+### What result confirmed the change
+
+| feature | changed % | crossings | species seen | boundary |
+| --- | --- | --- | --- | --- |
+| `bill_length_mm` | **60.0** | 1 | 2 | Adelie -> Chinstrap near **41.8 mm** |
+| `bill_depth_mm` | 0.0 | 0 | 1 | none |
+| `flipper_length_mm` | 0.0 | 0 | 1 | none |
+| `body_mass_g` | 0.0 | 0 | 1 | none |
+
+![Only bill_length_mm changes the prediction; the other three features stay Adelie across their full range](./images/feature_sensitivity_teja_p4.png)
+
+`bill_length_mm` is not merely the most influential feature - it is the only
+one with a boundary at all. Sweeping bill depth, flipper length, and body mass
+across their full realistic ranges never moved the prediction off Adelie, not
+once in 60 calls.
+
+### Three bugs the measurement caught
+
+Measuring instead of eyeballing exposed three places where the example reports
+something incorrectly. I fixed each one in my copy:
+
+1. **A false `MISMATCH`.** The example's 30-second timeout is shorter than a
+   cold start on this free-tier host (I measured about 50 seconds), so the
+   first baseline call timed out and was scored as a wrong prediction. I
+   raised the timeout and warm the server up before the baseline check.
+2. **A fake decision boundary.** On my first full run, a single dropped
+   connection mid-sweep left an error string where a species should have been,
+   and my own boundary detector dutifully counted it as a boundary -
+   `flipper_length_mm` appeared to have 2 crossings. Transient failures are now
+   retried; an HTTP 4xx is the server's real answer and is never retried. On
+   the clean re-run, `flipper_length_mm` correctly reports 0 crossings.
+3. **A mislabeled heatmap.** Section 3b proved Gentoo is never predicted from
+   this baseline, yet the example's grid rendered large regions in seagreen -
+   the color its own title assigns to Gentoo. The cause is that the color list
+   is stretched across only the values actually present, so with two species on
+   the grid, Chinstrap (1) took the last color instead of the middle one.
+   Pinning `vmin=-0.5` and `vmax=2.5` fixes it in two arguments.
+
+![Corrected prediction grid: Chinstrap renders in its own color and the boundary steps out for flippers of 210mm and longer](./images/prediction_grid_teja_p4.png)
+
+### Clearing the editor's type errors
+
+VS Code reports type errors on the example notebook that the project's
+`pyright` command never sees, because `pyproject.toml` scopes type checking to
+`src` and `tests` only - notebooks are outside it. I fixed both in my copy:
+
+- **`sweep_feature(values: list[float])` rejects `np.linspace()` output.**
+  `list` is invariant, so `list[np.float64]` is not a `list[float]` even though
+  `np.float64` subclasses `float`. Widening the parameter to `Sequence[float]`,
+  which is covariant, fixes every call site at once - and the call sites stay
+  byte-identical to the example.
+- **`Series.map()` given a dict.** Passing a dict is documented, supported
+  pandas behavior that the example relies on and that works at runtime; the
+  bundled stubs simply type the argument as callable-only. That is a stub
+  limitation rather than a defect, so it gets an inline `# pyright: ignore`,
+  the same idiom the example already uses for `plt.Line2D`.
+
+Verified by exporting the notebook and type-checking it directly:
+
+```shell
+uv run python -m nbconvert --to script notebooks/ml_07_teja_p4.ipynb
+uv run python -m pyright notebooks/ml_07_teja_p4.py
+```
+
+My notebook reports **0 errors, 0 warnings**. Neither fix changes behavior -
+the sweep produces the same numbers either way.
+
+### What is different, and why it matters
+
+Compared with the example, every original section still runs the same way and
+produces the same charts. The differences are the added Section 3b, the three
+corrections above, and the boundary positions now logged per grid row rather
+than left as a picture to squint at.
+
+It matters because the example's conclusion - "vary a feature and see what
+changes" - quietly depends on the API answering honestly every time. Two of my
+three fixes are cases where a network problem was reported as if it were a
+model answer, which is exactly the kind of error an investigation from the
+outside cannot afford.
+
+### Easy or challenging?
+
+The sweep itself was easy: `sweep_feature()` already did the work, so Section
+3b is a loop and a summary function. The interesting difficulty was
+interpreting a *null* result. Three features reporting 0.0% looked at first
+like a broken payload, and I only trusted it after the grid in Section 4
+showed `flipper_length_mm` shifting the bill-length boundary from 44.1 mm to
+46.9 mm for flippers of 210 mm and longer. So the feature is not ignored by the
+model - it is inactive at this baseline, because bill length 39.1 mm sits far
+inside Adelie territory and leaves the other features nothing to tip.
+
+That distinction is the real lesson: a one-feature-at-a-time sweep measures
+**local** sensitivity at one point in feature space, not global importance.
 
 ## Phase 5. Custom Project
 

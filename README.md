@@ -39,6 +39,62 @@ You'll work with these areas:
 - **pyproject.toml** - update authorship & links
 - **zensical.toml** - update authorship & links
 
+## My Files (Phase 4)
+
+I copied the example notebook and made my technical change in my copy.
+The example notebook is unchanged and still runs.
+
+| Example (unchanged)            | My copy                          |
+| ------------------------------ | -------------------------------- |
+| `notebooks/ml_07_case.ipynb`   | `notebooks/ml_07_teja_p4.ipynb`  |
+
+**What I changed:** the example sweeps one feature (`bill_length_mm`) and then
+asks which feature produces the sharpest boundary - a question a single sweep
+cannot answer. I added **Section 3b**, which reuses the example's own
+`sweep_feature()` function on **all four** features across their realistic
+ranges (4 x 20 = 80 calls) and ranks them by how much each one moves the
+prediction.
+
+**Why:** "which input matters most" was the notebook's own open question, and
+turning it from a guess into a measurement costs one loop and one chart.
+
+**Result:** `bill_length_mm` changed the prediction on **60%** of its swept
+range with a single clean boundary near **41.8 mm**. The other three features
+changed it on **0%** of theirs - 60 calls without ever leaving Adelie.
+
+![Only bill_length_mm changes the prediction; the other three features are flat across their full range](./docs/images/feature_sensitivity_teja_p4.png)
+
+**Three bugs the measurement caught,** each fixed in my copy:
+
+1. **A false `MISMATCH`.** The 30s timeout is shorter than this free-tier
+   API's cold start (measured ~50s), so the first baseline call timed out and
+   was scored as a wrong prediction. Longer timeout plus a warm-up call.
+2. **A fake decision boundary.** One dropped connection mid-sweep left an
+   error string where a species belonged, and my boundary detector counted it
+   as a boundary. Transient failures now retry; an HTTP 4xx is a real answer
+   and is never retried.
+3. **A mislabeled heatmap.** Section 3b proved Gentoo is never predicted from
+   this baseline, yet the grid showed large seagreen regions - the color its
+   own title assigns to Gentoo. With only two species present, the color list
+   stretched and Chinstrap took Gentoo's color. Pinning `vmin`/`vmax` fixed it.
+
+![Corrected prediction grid: Chinstrap now renders in its own color, and the boundary steps out at flipper lengths of 210mm and above](./docs/images/prediction_grid_teja_p4.png)
+
+I also cleared the type errors VS Code reports on the example. `sweep_feature()`
+declared `values: list[float]`, but `np.linspace()` returns numpy floats, and
+`list` is invariant - so `list[np.float64]` is rejected even though
+`np.float64` subclasses `float`. Widening the parameter to the covariant
+`Sequence[float]` fixes every call site at once without touching a single call.
+My notebook now type-checks with **0 errors**.
+
+Run my notebook with **Run All** in VS Code, or headlessly:
+
+```shell
+uv run python -m nbconvert --to notebook --execute --inplace notebooks/ml_07_teja_p4.ipynb
+```
+
+Full write-up: [docs/index.md](docs/index.md).
+
 ## Additional Packages
 
 This project uses `requests` to make the calls.
