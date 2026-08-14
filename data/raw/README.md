@@ -11,6 +11,46 @@ A small synthetic dataset used in the example project.
 Ten students with study hours, quiz scores, attendance, sleep, and a final score.
 Used to verify the project environment is working correctly.
 
+## cereal.csv (My Custom Project Dataset, Phase 5)
+
+Nutrition facts and Consumer Reports ratings for 77 breakfast cereals.
+Used in `notebooks/ml_07_teja_p5.ipynb` and `src/mlstudio/app_cereal_teja.py`
+to predict `rating` from the nine nutrition columns.
+
+- 77 rows, 16 columns
+- Features used: calories, protein, fat, sodium, fiber, carbo, sugars, potass, vitamins
+- Target: rating (0-100)
+- Downloaded from Kaggle
+
+### The -1 sentinel (important)
+
+This file has **no blank cells**, so a plain missing-value check reports the
+data is clean. It is not. Four values across three cereals are recorded as
+`-1`, meaning "not measured":
+
+| cereal | column(s) with -1 |
+| --- | --- |
+| Almond Delight | potass |
+| Cream of Wheat (Quick) | potass |
+| Quaker Oatmeal | carbo, sugars |
+
+`make_clean_view()` converts `-1` to `NaN` before dropping, leaving 74 rows.
+
+Those three rows are dropped rather than imputed, for a reason established in
+`notebooks/ml_07_teja_p5.ipynb` Section 3b: the published `rating` for each of
+them is reproduced **exactly** when `-1` is fed to the model as a real value,
+and missed when `-1` is replaced with `0`. The rating column was therefore
+computed without cleaning the sentinel first, so these rows have unreliable
+**targets**, not just unreliable features - imputing the feature would only
+teach the model to reproduce a data-entry artifact.
+
+### Citation
+
+Crawford, C. (2017). 80 Cereals [Data set].
+Retrieved from <https://www.kaggle.com/datasets/crawford/80-cereals>
+
+Original source: Carnegie Mellon University StatLib.
+
 ## Option 1. Recommended: diabetes_case.csv (Custom Project Dataset)
 
 A sample from the CDC Diabetes Health Indicators dataset derived from the

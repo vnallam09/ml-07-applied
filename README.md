@@ -95,6 +95,81 @@ uv run python -m nbconvert --to notebook --execute --inplace notebooks/ml_07_tej
 
 Full write-up: [docs/index.md](docs/index.md).
 
+## My Custom Project (Phase 5): What Makes a Cereal Highly Rated?
+
+I applied the example's skills - probing a model from the outside - to a new
+problem: predicting the Consumer Reports `rating` of 77 breakfast cereals from
+their nutrition facts.
+
+| My files | Purpose |
+| --- | --- |
+| `notebooks/ml_07_teja_p5.ipynb` | the investigation and narrative |
+| `src/mlstudio/app_cereal_teja.py` | the model, served behind an API-shaped contract |
+| `tests/test_app_cereal_teja.py` | smoke test + the refuses-incomplete-payload test |
+| `data/raw/cereal.csv` | [80 Cereals](https://www.kaggle.com/datasets/crawford/80-cereals), 77 rows x 16 columns |
+
+```shell
+uv run python -m mlstudio.app_cereal_teja
+```
+
+There is no cereal API to call, so I trained the model and then put it behind
+the same contract the example uses - a payload dict in, a prediction out - and
+investigated it from the outside with the same techniques: baselines, sweeps,
+an influence ranking, a two-feature grid, and edge cases.
+
+### Finding 1: the data looks clean and is not
+
+The file has no blank cells, so a missing-value check reports zero problems.
+But four values across three cereals are recorded as `-1`, meaning "not
+measured". Fed to the model with `-1` taken literally, all three cereals'
+published ratings come back **exactly**; replaced with a sensible `0`, all
+three miss.
+
+So the rating column was computed without cleaning the sentinel first - those
+rows carry ratings derived from a negative gram count. That makes their
+**target** unreliable, not just their features, so I drop them rather than
+impute. Probing the model from the outside ended up revealing how the dataset
+itself was built.
+
+### Finding 2: the target is a formula, not a judgment
+
+R-squared is **1.000000** and the largest residual on held-out cereals is
+**5e-07** rating points. The model does not approximate the rating, it
+reproduces it exactly. A score carrying human judgment could never fit like
+that, so the rating in this dataset is a fixed linear function of the nine
+nutrition columns - and probing the model recovers the formula itself.
+
+### Finding 3: ranking by coefficient gives the wrong answer
+
+![Fiber dominates, and sodium outranks sugar once the observed range is accounted for](./docs/images/cereal_influence_teja.png)
+
+`protein` has nearly fiber's coefficient (+3.27 vs +3.44) but cereals only span
+1g to 6g of protein, so it can move a rating 16 points at most. `calories` has
+a coefficient 15x smaller and **1.5x the real influence**, because it ranges
+over 110 units. Fiber wins either way, and wins big: 48 rating points, more than
+the next two features combined. One gram of fiber cancels about 4.8g of sugar.
+
+Sugar, the feature I expected to dominate a healthiness score, ranks **sixth** -
+behind sodium.
+
+### Finding 4: the model has no guardrails
+
+| probe | predicted rating |
+| --- | --- |
+| impossible fiber (1000g) | **3477.0** |
+| candy bar calories (5000) | **-1048.7** |
+| a box of literally nothing | **54.9**, beating 62 of 74 real cereals |
+| missing a required field | refused |
+
+An empty box scores 54.9 - the model's intercept - and beats **84%** of real
+cereals, because the formula starts high and deducts for what a cereal
+contains. Only the bran and shredded wheat end of the aisle does better than
+nothing at all. The same weakness the example finds in the penguin API (a 999mm
+bill classified without hesitation) shows up here: a linear model cannot know
+the edge of its own training range.
+
+Full write-up: [docs/index.md](docs/index.md).
+
 ## Additional Packages
 
 This project uses `requests` to make the calls.

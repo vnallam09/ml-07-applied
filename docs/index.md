@@ -150,59 +150,217 @@ That distinction is the real lesson: a one-feature-at-a-time sweep measures
 
 ## Phase 5. Custom Project
 
-Describe your custom investigation of the deployed model.
+**What makes a breakfast cereal highly rated?**
 
-Be specific about what changed from the example project.
+A cereal box tells you the nutrition facts. A rating tells you whether the
+cereal is any good. I set out to recover the relationship between the two from
+the outside, without being told the rule.
+
+My files:
+
+| File | Purpose |
+| --- | --- |
+| `notebooks/ml_07_teja_p5.ipynb` | the investigation and narrative |
+| `src/mlstudio/app_cereal_teja.py` | the model, served behind an API-shaped contract |
+| `tests/test_app_cereal_teja.py` | smoke test plus a refuses-incomplete-payload test |
+| `data/raw/cereal.csv` | 77 cereals x 16 columns |
+
+```shell
+uv run python -m mlstudio.app_cereal_teja
+```
 
 ### Basis and API
 
-Describe the deployed model and API you started with.
+The example project probes a **deployed penguin classifier** at
+`https://ml-penguin-predictor.onrender.com/predict`. It accepts a JSON payload
+of four measurements (bill length, bill depth, flipper length, body mass) and
+returns one of three species. The model is trained and served elsewhere, so the
+only way to learn anything about it is to send inputs and read outputs.
 
-Include:
+I changed the endpoint, because there is no public cereal-rating API to call.
+Instead I train a `LinearRegression` model on the cereals data and then **put it
+behind the same contract**: `predict(model, payload)` takes a dict of the nine
+nutrition features and returns a rating, and raises on an incomplete payload
+the way the penguin API returns HTTP 400. After training, I stop looking at how
+the model was built and probe it only through that one function.
 
-- The example model and what it predicts
-- The API endpoint and what inputs it expects
-- Why you chose to keep or change the endpoint or model
+Keeping the contract identical is what let every technique transfer over:
+
+| Example (penguins) | This project (cereals) |
+| --- | --- |
+| `POST /predict` over HTTP | `predict(model, payload)` |
+| classification, 3 species | regression, rating 0-100 |
+| baseline: one penguin per species | baseline: the median cereal |
+| sweep `bill_length_mm` | sweep each of 9 nutrition features |
+| decision boundary | response curve and slope |
+| grid: bill length x flipper length | grid: fiber x sugars |
+| edge cases: 999mm bill, missing field | edge cases: 1000g fiber, missing field |
+
+### Data
+
+[80 Cereals](https://www.kaggle.com/datasets/crawford/80-cereals) (Kaggle,
+originally Carnegie Mellon StatLib): 77 cereals, 16 columns. The nine nutrition
+columns are the features and `rating` is the target. Identity columns (`name`,
+`mfr`, `type`) and `shelf` are excluded on purpose - the question is whether
+nutrition **alone** explains the rating. Four values across three cereals are
+dropped for the reason given below, leaving 74 rows for modeling.
 
 ### Investigation Approach
 
-Describe how you investigated the model's behavior.
+0. **Check the data honestly** - count sentinel values, not just blank cells,
+   and use the model itself to decide whether affected rows can be repaired.
+1. **Baseline** - predict the rating of the median cereal, to have a known
+   reference point every probe is measured against.
+2. **One-feature sweeps** - vary each of the nine features across the range it
+   actually spans in the data, holding the rest at the median.
+3. **Influence ranking** - the Phase 4 method carried forward: rank features by
+   coefficient x observed range, not by coefficient alone.
+4. **Two-feature grid** - vary fiber and sugars together to map the trade-off.
+5. **Edge cases** - send input that is not a cereal and see whether the model
+   refuses or answers.
 
-Include:
+### Findings: The Data Looks Clean and Is Not
 
-- Which features you varied and why
-- How you structured your tests (single feature, grid, edge cases)
-- What you were trying to learn about the model
+`cereal.csv` has no blank cells, so `isna()` reports zero missing values and the
+data passes a standard quality check. It should not. Four values across three
+cereals are recorded as the sentinel `-1`, meaning "not measured":
+
+| cereal | column(s) with -1 |
+| --- | --- |
+| Almond Delight | potass |
+| Cream of Wheat (Quick) | potass |
+| Quaker Oatmeal | carbo, sugars |
+
+Dropping those rows is the safe move, but the model let me do better than
+assume. It was trained only on cereals with no sentinel, so those three rows are
+genuinely unseen data. Feeding each one in with `-1` taken **literally**:
+
+| cereal | published | predicted using -1 | predicted using 0 |
+| --- | --- | --- | --- |
+| Almond Delight | 34.3848 | **34.3848** | 34.3508 |
+| Cream of Wheat (Quick) | 64.5338 | **64.5338** | 64.4998 |
+| Quaker Oatmeal | 50.8284 | **50.8284** | 51.1959 |
+
+`-1` reproduces all three published ratings exactly; a sensible `0` misses all
+three. So the rating column was computed without cleaning the sentinel first -
+the formula ran straight over the stored values, and these cereals carry ratings
+derived from a negative gram count. Quaker Oatmeal's is off by about 0.37
+points.
+
+That settles the modeling question. These rows are not merely missing a feature;
+their **target** is unreliable too, so imputing the feature would not rescue
+them - it would teach the model to reproduce a data-entry artifact. All three are
+dropped, and the decision is backed by evidence rather than convention.
+
+It is also the module's own lesson turned back on the data: probing a model from
+the outside revealed something about how the dataset itself was built.
+
+### Findings: The Target Is a Formula
+
+R-squared is **1.000000**. The largest residual on the held-out test cereals is
+**5.2e-07** rating points, which is float rounding rather than error.
+
+The model does not approximate the rating; it reproduces it exactly. A score
+carrying human judgment could never fit that way, so the investigation answered
+a question I had not thought to ask: `rating` in this dataset is **not an
+opinion, it is a formula** - a fixed linear function of the nine nutrition
+columns. Everything after this point is not "what did the model learn about
+cereal" but "what is the formula, recovered from the outside".
+
+Every response curve being a perfectly straight line is the visual confirmation.
 
 ### Findings: Feature Sensitivity
 
-Describe what you observed when varying individual features.
+![Fiber dominates; sodium outranks sugar once the observed range is accounted for](./images/cereal_influence_teja.png)
 
-Include:
+| feature | coefficient | observed range | real influence |
+| --- | --- | --- | --- |
+| `fiber` | **+3.44** | 14 | **+48.2** |
+| `calories` | -0.22 | 110 | **-24.5** |
+| `carbo` | +1.09 | 18 | +19.7 |
+| `sodium` | -0.05 | 320 | -17.4 |
+| `protein` | **+3.27** | 5 | +16.4 |
+| `sugars` | -0.72 | 15 | -10.9 |
+| `potass` | -0.03 | 315 | -10.7 |
+| `fat` | -1.69 | 5 | -8.5 |
+| `vitamins` | -0.05 | 100 | -5.1 |
 
-- Which features had the most influence on predictions
-- Where the decision boundary appeared to shift
-- Any surprising or counterintuitive results
+- **Fiber is the strongest lever by a wide margin** - 48 rating points, more
+  than the next two features combined. One gram of fiber cancels about 4.8
+  grams of sugar.
+- **Ranking by coefficient gives the wrong answer.** `protein` has nearly
+  fiber's coefficient but cereals span only 1g to 6g of protein, so it can move
+  a rating 16 points at most. `calories` has a coefficient 15x smaller than
+  protein's and 1.5x the real influence, because it ranges over 110 units.
+- **The surprise: sugar is not the villain.** I expected sugar to dominate a
+  cereal healthiness score. It ranks sixth, behind sodium.
+
+This is the Phase 4 lesson in a new setting: the ranking you get depends
+entirely on whether you account for how far an input can realistically move.
 
 ### Findings: Edge Cases
 
-Describe what happened with unusual or invalid inputs.
+| probe | predicted rating | verdict |
+| --- | --- | --- |
+| negative sugars (-5g) | 49.1 | answered without complaint |
+| impossible fiber (1000g) | **3477.0** | far outside the 0-100 scale |
+| candy bar calories (5000) | **-1048.7** | far outside the 0-100 scale |
+| a box of literally nothing | **54.9** | beats 62 of 74 real cereals |
+| missing a required field | refused | correct |
 
-Include:
+**The formula has no guardrails.** It is a straight line extended forever in
+every direction, so it reports a rating of 3477 on a 0-100 scale without
+hesitation. The example project finds exactly the same weakness in the penguin
+API, which classifies a 999mm bill without complaint. A linear model cannot
+know the edge of its own training range, so something outside the model has to
+enforce it.
 
-- What edge cases you tested
-- How the API responded (prediction, error, or unexpected behavior)
-- What this tells you about the model's robustness
+**An empty box scores 54.9 and beats 84% of real cereals.** That number is the
+model's intercept, and it is a real property of the formula: the score starts
+high and cereals lose points for what they contain. Only 12 of 74 cereals - the
+bran and shredded wheat end of the aisle - do better than nothing at all.
+
+The contract itself is the one thing done right: an incomplete payload raises
+rather than being silently filled in, mirroring the API's HTTP 400.
 
 ### Summary
 
-Summarize your custom investigation.
+**What I learned about the model's behavior.** It is perfectly confident and
+perfectly linear, because it is not really a model - it is a formula I
+recovered by probing it. It is trustworthy inside the range of real cereals and
+meaningless outside it, and nothing in the response distinguishes those two
+cases.
 
-Include:
+**Where it is confident and where it is fragile.** Confident everywhere, which
+is the fragility. A prediction of 42 and a prediction of 3477 arrive in exactly
+the same form, with nothing to signal that one is an extrapolation far outside
+anything the model has seen.
 
-- What you learned about the model's behavior
-- Where it appears confident and where it seems fragile
-- What you would change about the API contract or model
-- What kinds of real problems this approach could apply to
+**What I would change.**
 
-Display at least one chart or screenshot showing your findings.
+- **Clamp the output to 0-100** at the serving layer. The formula cannot do it
+  and should not be asked to.
+- **Validate input ranges**, so a 1000g fiber cereal is refused the way a
+  missing field already is.
+- **Publish the formula.** Once R-squared is exactly 1, the model adds nothing
+  a documented equation would not, and the equation would be honest about being
+  a rule rather than a prediction.
+
+**Where this approach applies.** Any time a score, price, or risk rating
+arrives from a system you cannot see inside - a credit decision, an insurance
+quote, a content ranking. Sweeping one input at a time and ranking by
+coefficient x realistic range is enough to tell whether you are looking at a
+learned model or a rule someone wrote down, and to find where it stops making
+sense. That distinction matters, because a formula can be audited and argued
+with, while a model usually cannot.
+
+### Next Steps
+
+- Recover the exact published rating formula and compare it against the
+  coefficients I found, to confirm the reconstruction is the real rule.
+- Model something genuinely uncertain instead - predicting `mfr` from nutrition
+  would put a real classification boundary back in play.
+- Re-run the sweeps from a low-rated baseline rather than the median. In Phase
+  4 a feature that looked inert from one baseline mattered from another; a
+  linear formula should not behave that way, which makes it a clean test of the
+  method itself.
